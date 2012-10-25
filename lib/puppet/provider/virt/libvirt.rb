@@ -74,7 +74,7 @@ Puppet::Type.type(:virt).provide(:libvirt) do
 
         arguments << diskargs
 
-        if File.exists?(resource[:virt_path].split('=')[1])
+        if File.exists?(resource[:virt_disk].split('=')[1])
             if resource[:pxe]
                 warnonce("Ignoring PXE boot. Domain image already exists")
             end
@@ -97,8 +97,8 @@ Puppet::Type.type(:virt).provide(:libvirt) do
         args = []
         parameters = ""
 
-        if resource[:virt_path]
-            parameters = resource[:virt_path]
+        if resource[:virt_disk]
+            parameters = resource[:virt_disk]
         end
         if resource[:disk_size]
             parameters.concat("," + resource[:disk_size])
