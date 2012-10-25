@@ -321,24 +321,17 @@ module Puppet
             desc "Additional kernel command line arguments to pass to the installer when performing a guest install from declared location."
         end
 
-        newparam(:virt_path) do
-            desc "Path to disk image file. This field is mandatory. NB: Initially only import existing disk is available.
-Image files must end with `*.img`, `*.qcow`, `*.qcow2`, or `*.raw`"
-            isrequired #FIXME Bug #4049
+        newparam(:virt_disk) do
+            desc "Path to disk. This field is mandatory.
+                  Volumes must begin with 'vol=', which also requires setting up disk pools
+                  Image files must begin with 'path=' and end with `*.img`, `*.qcow`, `*.qcow2`, or `*.raw`"
 
-            # Value must end with .img or .qcow, .qcow2, or .raw
+            isrequired
+
             validate do |value|
-                case value
-                    when String
-                        if (value =~ /.(img|raw|qcow|qcow2)$/).nil?
-                            self.fail "%s is not a valid %s" % [value, self.class.name]
-                        end
-                    end
-                return value
-            end
-
-            munge do |value|
-                "path=" + value
+                if not (value =~ /^vol=/) or (value =~ /.(img|raw|qcow|qcow2)$/)
+                   self.fail "%s is not a valid %s" % [value, self.class.name]
+                end
             end
         end
 
